@@ -34,7 +34,7 @@ public class ASTParserTool {
     public boolean enterMethod = false;
 
 
-    public MethodList parseMethod(String javaFilePath) {
+    public MethodList parseMethod(final String javaFilePath) {
         byte[] input = null;
         try {
             BufferedInputStream bufferedInputStream = new BufferedInputStream(new FileInputStream(javaFilePath));
@@ -54,6 +54,9 @@ public class ASTParserTool {
         astParser.setKind(ASTParser.K_COMPILATION_UNIT);
         astParser.setResolveBindings(true);
         final CompilationUnit result = (CompilationUnit) astParser.createAST(null);
+        List types = result.types();
+        TypeDeclaration typeDec = (TypeDeclaration) types.get(0);
+        final String className = typeDec.getName().toString();
 
         methodVectorStack = new Stack<>();
 
@@ -90,9 +93,12 @@ public class ASTParserTool {
                     methodFunctionNameTokenList = new TokenList();
                     methodQualifiedNameTokenList = new TokenList();
 
-                    MethodVector methodVector = new MethodVector(fileName, startLineNumber, endLineNumber,
-                            methodReservedWordTokenList, methodTypeTokenList, methodLiteralTokenList, methodVariableTokenList,
-                            methodFunctionNameTokenList, methodQualifiedNameTokenList, methodOperatorTokenList, methodMarkerTokenList);
+                    String methodName = method.getName().toString();
+                    NewMethodVector methodVector =
+                            new NewMethodVector(fileName, javaFilePath, className, methodName,
+                                    startLineNumber, endLineNumber,
+                                    methodReservedWordTokenList, methodTypeTokenList, methodLiteralTokenList, methodVariableTokenList,
+                                    methodFunctionNameTokenList, methodQualifiedNameTokenList, methodOperatorTokenList, methodMarkerTokenList);
 
                     methodVectorStack.push(methodVector);
 
