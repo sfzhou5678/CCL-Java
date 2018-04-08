@@ -11,7 +11,7 @@ import org.eclipse.jdt.core.dom.*;
 
 public class ASTParserTool {
 
-    public MethodList methodVectorList = new MethodList();
+    public MethodList methodVectorList;
 
     public void setFileName(String fname) {
         this.fileName = fname;
@@ -43,10 +43,12 @@ public class ASTParserTool {
             bufferedInputStream.close();
         } catch (FileNotFoundException e) {
             e.printStackTrace();
+            return new MethodList();
         } catch (IOException e) {
             e.printStackTrace();
+            return new MethodList();
         }
-
+        methodVectorList = new MethodList();
         // 这里的parsing还会顺便提取出每个维度的特征(即词频dict)
         ASTParser astParser = ASTParser.newParser(AST.JLS3);
 
